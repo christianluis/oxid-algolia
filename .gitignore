@@ -1,0 +1,7 @@
+# IDE
+/.idea/
+/.phpstorm-oxid.meta.php
+/.ide-helper.php
+
+# OS
+.DS_Store

@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . "/../../../../bootstrap.php";
+
+$myConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
+oxNew(\ChristianLuis\Algolia\Core\Exporter::class)->execute();
+
+$myConfig->pageClose();
