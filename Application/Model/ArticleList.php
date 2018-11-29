@@ -52,8 +52,8 @@ class ArticleList extends ArticleList_parent
         $activeSnippet = $article->getSqlActiveSnippet();
         $sql = "SELECT * 
                 FROM {$viewName}
-                WHERE {$activeSnippet}     
-                ";
+                WHERE {$activeSnippet}";
+
         $this->selectString($sql);
     }
 }
