@@ -14,27 +14,16 @@ class ArticleList extends ArticleList_parent
             return parent::loadCategoryArticles($sCatId, $aSessionFilter, $iLimit);
         }
         try {
-            $client = Registry::get(AlgoliaApi::class)->getClient();
-            $index = $client->initIndex(Registry::get(AlgoliaApi::class)->getIndexName('Articles', $this->_sCustomSorting));
-
-            $res = $index->search('*', [
+            $searchParameters = [
                 'filters' => "categories:'{$sCatId}'",
-                'attributesToRetrieve' => [
-                    'objectID',
-                ],
-                'attributesToHighlight' => [],
-                'distinct' => 1,
                 'page' => $this->_aSqlLimit[0] / $this->_aSqlLimit[1],
                 'hitsPerPage' => $this->_aSqlLimit[1],
-            ]);
-
-            $articleIds = array_map(function ($value) {
-                return $value['objectID'];
-            }, $res['hits']);
+            ];
+            $algoriaResult = Registry::get(AlgoliaApi::class)->getResultFromAlgolia('Articles', $this->_sCustomSorting, '*', $searchParameters);
 
             $this->setSqlLimit(0, 0);
-            $this->loadIds($articleIds);
-            $this->sortByIds($articleIds);
+            $this->loadIds($algoriaResult['articleIds']);
+            $this->sortByIds($algoriaResult['articleIds']);
         } catch (\Algolia\AlgoliaSearch\Exceptions\NotFoundException $ex) {
             $displayEx = oxNew(DisplayError::class);
             $displayEx->setMessage('ERROR_NO_INDEX_FOUND');
@@ -42,7 +31,7 @@ class ArticleList extends ArticleList_parent
             $oxUtilsView->addErrorToDisplay($displayEx);
         }
 
-        return $res['nbHits'];
+        return $algoriaResult['nbHits'];
     }
 
     public function loadAllAlgoliaExportArticles()

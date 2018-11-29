@@ -26,25 +26,14 @@ class Search extends Search_parent
         $articleList = oxNew(ArticleList::class);
 
         try {
-            $client = Registry::get(AlgoliaApi::class)->getClient();
-            $index = $client->initIndex(Registry::get(AlgoliaApi::class)->getIndexName('Articles', $sSortBy));
-
-            $this->res = $index->search($sSearchParamForQuery, [
-                'attributesToRetrieve' => [
-                    'objectID',
-                ],
-                'attributesToHighlight' => [],
-                'distinct' => 1,
+            $searchParameters = [
                 'page' => $this->iActPage,
-                'hitsPerPage' => $iNrofCatArticles,
-            ]);
+                'hitsPerPage' => $iNrofCatArticles
+            ];
+            $this->res = Registry::get(AlgoliaApi::class)->getResultFromAlgolia('Articles', $sSortBy, $sSearchParamForQuery, $searchParameters);
 
-            $articleIds = array_map(function ($value) {
-                return $value['objectID'];
-            }, $this->res['hits']);
-
-            $articleList->loadIds($articleIds);
-            $articleList->sortByIds($articleIds);
+            $articleList->loadIds($this->res['articleIds']);
+            $articleList->sortByIds($this->res['articleIds']);
         } catch (\Algolia\AlgoliaSearch\Exceptions\NotFoundException $ex) {
             $displayEx = oxNew(DisplayError::class);
             $displayEx->setMessage('ERROR_NO_INDEX_FOUND');

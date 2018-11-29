@@ -31,4 +31,28 @@ class AlgoliaApi
 
         return $entityType . "_" . $shopId . "_" . Registry::getLang()->getLanguageAbbr($langId) . $sortBy;
     }
+
+    public function getResultFromAlgolia($indexName, $oxidSorting, $query = '*', $searchParameters = [])
+    {
+        $index = $this->getClient()->initIndex(Registry::get(AlgoliaApi::class)->getIndexName($indexName, $oxidSorting));
+        $searchDefaultParameters = [
+            'attributesToRetrieve' => [
+                'objectID',
+            ],
+            'attributesToHighlight' => [],
+            'distinct' => 1,
+            'page' => 0,
+            'hitsPerPage' => 10,
+        ];
+
+        $searchParameters = array_merge($searchDefaultParameters, $searchParameters);
+
+        $res = $index->search($query, $searchParameters);
+
+        $res['articleIds'] = array_map(function ($value) {
+            return $value['objectID'];
+        }, $res['hits']);
+
+        return $res;
+    }
 }
