@@ -1,0 +1,13 @@
+dist: xenial
+
+language: php
+
+php:
+  - '7.1'
+
+before_script:
+  - composer install
+
+script:
+  - ./vendor/bin/phpmd ./ text Tests/phpmd.xml
+  - ./vendor/bin/phpcs -pvs --report=full --standard=Tests/phpcs.xml ./
