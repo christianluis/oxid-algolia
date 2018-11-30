@@ -23,6 +23,13 @@ class Search extends Search_parent
         $iNrofCatArticles = $this->getConfig()->getConfigParam('iNrofCatArticles');
         $iNrofCatArticles = $iNrofCatArticles ? $iNrofCatArticles : 10;
 
+        $iLang = \OxidEsales\Eshop\Core\Registry::getLang()->getBaseLanguage();
+        $aSessionFilter = \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('session_attrfilter');
+        $sessionFilter = null;
+        if ($aSessionFilter && isset($aSessionFilter['search'][$iLang])) {
+            $sessionFilter = $aSessionFilter['search'][$iLang];
+        }
+
         $articleList = oxNew(ArticleList::class);
 
         try {
@@ -30,7 +37,7 @@ class Search extends Search_parent
                 'page' => $this->iActPage,
                 'hitsPerPage' => $iNrofCatArticles
             ];
-            $this->res = Registry::get(AlgoliaApi::class)->getResultFromAlgolia('Articles', $sSortBy, $sSearchParamForQuery, $searchParameters);
+            $this->res = Registry::get(AlgoliaApi::class)->getResultFromAlgolia('Articles', $sSortBy, $sSearchParamForQuery, $searchParameters, null, $sessionFilter);
 
             $articleList->loadIds($this->res['articleIds']);
             $articleList->sortByIds($this->res['articleIds']);

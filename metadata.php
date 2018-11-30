@@ -22,6 +22,7 @@ $aModule = array(
         \OxidEsales\Eshop\Application\Model\Search::class => \ChristianLuis\Algolia\Application\Model\Search::class,
         \OxidEsales\Eshop\Application\Model\RssFeed::class => \ChristianLuis\Algolia\Application\Model\RssFeed::class,
         \OxidEsales\Eshop\Application\Controller\ArticleListController::class => \ChristianLuis\Algolia\Application\Controller\ArticleListController::class,
+        \OxidEsales\Eshop\Application\Controller\SearchController::class => \ChristianLuis\Algolia\Application\Controller\SearchController::class,
     ),
     'controllers' => array(
         \ChristianLuis\Algolia\Core\Exporter::class => \ChristianLuis\Algolia\Core\Exporter::class,
