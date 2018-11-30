@@ -56,6 +56,7 @@ class Exporter
             $payload[] = array_filter([
                 "objectID" => $article->getId(),
                 "oxparentid" => $article->getAlgoliaDistinctIdentifier(),
+                "customscore" => $article->getCustomScore(),
                 "oxartnum" => $article->oxarticles__oxartnum->rawValue,
                 "oxean" => $article->oxarticles__oxean->rawValue,
                 "oxtitle" => $article->oxarticles__oxtitle->rawValue,
@@ -89,6 +90,8 @@ class Exporter
     protected function sendToAlgolia($indexName, $payload)
     {
         $registeredSortCols = Registry::getConfig()->getConfigParam('aSortCols');
+        $registeredSortCols = array_merge($registeredSortCols, ['oxtimestamp']);
+
         $sortMethods = [];
         foreach ($registeredSortCols as $col) {
             $sortMethods[$indexName . '_' . $col . '_desc'] = "desc({$col})";
@@ -109,6 +112,7 @@ class Exporter
             'replicas' => array_keys($sortMethods),
             'attributesForFaceting' => $attributesForFaceting,
             'attributeForDistinct' => 'oxparentid',
+            'customRanking' => ['desc(customscore)'],
         ]);
 
         foreach ($sortMethods as $key => $value) {
@@ -119,6 +123,7 @@ class Exporter
                 ],
                 'attributesForFaceting' => $attributesForFaceting,
                 'attributeForDistinct' => 'oxparentid',
+                'customRanking' => ['desc(customscore)'],
             ]);
         }
         $index->saveObjects($payload);
@@ -127,11 +132,9 @@ class Exporter
     protected function log($message, $context = [])
     {
         echo $message;
-
         if (count($context)) {
             echo ' (' . print_r($context, true) . ')';
         }
-
         echo PHP_EOL;
     }
 }

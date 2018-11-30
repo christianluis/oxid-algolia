@@ -13,13 +13,29 @@ class ArticleList extends ArticleList_parent
         if (!Registry::getConfig()->getConfigParam('clalgolia_api_activate')) {
             return parent::loadCategoryArticles($sCatId, $aSessionFilter, $iLimit);
         }
-        try {
-            $searchParameters = [
-                'filters' => "categories:'{$sCatId}'",
-                'page' => $this->_aSqlLimit[0] / $this->_aSqlLimit[1],
-                'hitsPerPage' => $this->_aSqlLimit[1],
+
+        if (!is_array($this->_aSqlLimit) || count($this->_aSqlLimit) !== 2
+            || $this->_aSqlLimit[1] < 1) {
+            $this->_aSqlLimit = [
+                0,
+                $this->getConfig()->getConfigParam('iNrofCatArticles'),
             ];
-            $algoriaResult = Registry::get(AlgoliaApi::class)->getResultFromAlgolia('Articles', $this->_sCustomSorting, '*', $searchParameters);
+        }
+
+        $iLang = \OxidEsales\Eshop\Core\Registry::getLang()->getBaseLanguage();
+        $sessionFilter = null;
+        if ($aSessionFilter && isset($aSessionFilter[$sCatId][$iLang])) {
+            $sessionFilter = $aSessionFilter[$sCatId][$iLang];
+//            $sFilterSql = $this->_getFilterSql($sCatId, $aSessionFilter[$sCatId][$iLang]);
+        }
+
+        $searchParameters = [
+            'page' => $this->_aSqlLimit[0] / $this->_aSqlLimit[1],
+            'hitsPerPage' => $this->_aSqlLimit[1],
+        ];
+
+        try {
+            $algoriaResult = Registry::get(AlgoliaApi::class)->getResultFromAlgolia('Articles', $this->_sCustomSorting, '*', $searchParameters, $sCatId, $sessionFilter);
 
             $this->setSqlLimit(0, 0);
             $this->loadIds($algoriaResult['articleIds']);

@@ -17,8 +17,11 @@ $aModule = array(
     'extend'       => array(
         \OxidEsales\Eshop\Application\Model\Article::class => \ChristianLuis\Algolia\Application\Model\Article::class,
         \OxidEsales\Eshop\Application\Model\ArticleList::class => \ChristianLuis\Algolia\Application\Model\ArticleList::class,
+        \OxidEsales\Eshop\Application\Model\Attribute::class => \ChristianLuis\Algolia\Application\Model\Attribute::class,
         \OxidEsales\Eshop\Application\Model\AttributeList::class => \ChristianLuis\Algolia\Application\Model\AttributeList::class,
         \OxidEsales\Eshop\Application\Model\Search::class => \ChristianLuis\Algolia\Application\Model\Search::class,
+        \OxidEsales\Eshop\Application\Model\RssFeed::class => \ChristianLuis\Algolia\Application\Model\RssFeed::class,
+        \OxidEsales\Eshop\Application\Controller\ArticleListController::class => \ChristianLuis\Algolia\Application\Controller\ArticleListController::class,
     ),
     'controllers' => array(
         \ChristianLuis\Algolia\Core\Exporter::class => \ChristianLuis\Algolia\Core\Exporter::class,
