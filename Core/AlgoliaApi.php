@@ -48,17 +48,17 @@ class AlgoliaApi
             'hitsPerPage' => 10,
         ];
 
-        $filterArray = [];
+
         if (count($sessionFilter)) {
-            $filterArray = $this->transformSessionFilterToAlgolia($sessionFilter);
+            $filterArray = $this->transformSessionFilterToAlgoliaFacets($sessionFilter);
         }
 
         if ($catId) {
-            $filterArray = array_merge($filterArray, ['categories:' . $catId]);
+            $searchDefaultParameters['filters'] = $this->translateFiltersToAlgoliaFilters(['categories:' . $catId]);
         }
 
-        if (count($filterArray)) {
-            $searchDefaultParameters['filters'] = $this->translateFiltersToAlgoliaLanguage($filterArray);
+        if (!empty($filterArray)) {
+            $searchDefaultParameters['facetFilters'] = $filterArray;
         }
 
         $searchParameters = array_merge($searchDefaultParameters, $searchParameters);
@@ -77,7 +77,7 @@ class AlgoliaApi
         return $this->res;
     }
 
-    protected function transformSessionFilterToAlgolia($sessionFilter)
+    protected function transformSessionFilterToAlgoliaFacets($sessionFilter)
     {
         $filterArray = [];
         foreach ($sessionFilter as $attributeId => $filterValue) {
@@ -88,13 +88,13 @@ class AlgoliaApi
             if (!$attribute->load($attributeId)) {
                 continue;
             }
-            $filterArray[] = "attributes." . $attribute->oxattribute__oxtitle->value . ":'" . $filterValue . "'";
+            $filterArray[] = "attributes." . $attribute->oxattribute__oxtitle->value . ":" . $filterValue . "";
         }
 
         return $filterArray;
     }
 
-    protected function translateFiltersToAlgoliaLanguage($filterArray)
+    protected function translateFiltersToAlgoliaFilters($filterArray)
     {
         return implode(' AND ', $filterArray);
     }
