@@ -68,6 +68,7 @@ class Exporter
                 "oxmanufacturerid" => $article->oxarticles__oxvendorid->value,
                 "oxsoldamount" => (int)$article->oxarticles__oxsoldamount->value,
                 "oxrating" => (float)$article->oxarticles__oxrating->value,
+                "oxtimestamp" => $article->oxarticles__oxtimestamp->value,
                 "categories" => $article->getCategoryIds(),
                 "attributes" => $articleAttributes,
             ], function ($value) {
