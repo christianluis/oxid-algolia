@@ -26,7 +26,6 @@ class ArticleList extends ArticleList_parent
         $sessionFilter = null;
         if ($aSessionFilter && isset($aSessionFilter[$sCatId][$iLang])) {
             $sessionFilter = $aSessionFilter[$sCatId][$iLang];
-//            $sFilterSql = $this->_getFilterSql($sCatId, $aSessionFilter[$sCatId][$iLang]);
         }
 
         $searchParameters = [
