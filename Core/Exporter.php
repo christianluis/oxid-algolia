@@ -118,12 +118,12 @@ class Exporter
         foreach ($sortMethods as $key => $value) {
             $$key = $this->client->initIndex($key);
             $$key->setSettings([
-                "ranking" => [
-                    $value,
-                ],
                 'attributesForFaceting' => $attributesForFaceting,
                 'attributeForDistinct' => 'oxparentid',
-                'customRanking' => ['desc(customscore)'],
+                'customRanking' => [
+                    'desc(customscore)',
+                    $value,
+                ],
             ]);
         }
         $index->saveObjects($payload);
