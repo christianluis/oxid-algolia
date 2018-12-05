@@ -4,7 +4,7 @@
   "type": "oxideshop-module",
   "minimum-stability": "dev",
   "keywords": ["oxid", "modules", "eShop", "Algolia"],
-  "homepage": "-",
+  "homepage": "https://ninnia.de",
   "license": [
     "GPL-3.0-only"
   ],
